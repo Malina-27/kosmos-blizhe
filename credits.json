@@ -1,0 +1,263 @@
+[
+  {
+    "id": "ariel",
+    "file": "ariel.jpg",
+    "url": "https://maps.jpl.nasa.gov/tmaps/pix/ura1vuu2.jpg",
+    "source": "https://maps.jpl.nasa.gov/tmaps/uranus.html",
+    "credit": "NASA / JPL / Caltech / USGS — Voyager/Galileo mosaics",
+    "kind": "Мозаика космических снимков; непокрытые области условны",
+    "bytes": 51290
+  },
+  {
+    "id": "callisto",
+    "file": "callisto.jpg",
+    "url": "https://maps.jpl.nasa.gov/tmaps/pix/jup4vss2.jpg",
+    "source": "https://maps.jpl.nasa.gov/tmaps/jupiter.html",
+    "credit": "NASA / JPL / Caltech / USGS — Voyager/Galileo mosaics",
+    "kind": "Мозаика космических снимков; непокрытые области условны",
+    "bytes": 216624
+  },
+  {
+    "id": "dione",
+    "file": "dione.jpg",
+    "url": "https://maps.jpl.nasa.gov/tmaps/pix/sat4vss2.jpg",
+    "source": "https://maps.jpl.nasa.gov/tmaps/saturn.html",
+    "credit": "NASA / JPL / Caltech / USGS — Voyager/Galileo mosaics",
+    "kind": "Мозаика космических снимков; непокрытые области условны",
+    "bytes": 120516
+  },
+  {
+    "id": "earth",
+    "file": "earth.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Карта на основе космических снимков; часть деталей реконструирована",
+    "bytes": 463087
+  },
+  {
+    "id": "earth_clouds",
+    "file": "earth_clouds.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_earth_clouds.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Карта на основе космических снимков; часть деталей реконструирована",
+    "bytes": 965676
+  },
+  {
+    "id": "eris",
+    "file": "eris.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_eris_fictional.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Художественная карта",
+    "bytes": 1070441
+  },
+  {
+    "id": "europa",
+    "file": "europa.jpg",
+    "url": "https://maps.jpl.nasa.gov/tmaps/pix/jup2vss2.jpg",
+    "source": "https://maps.jpl.nasa.gov/tmaps/jupiter.html",
+    "credit": "NASA / JPL / Caltech / USGS — Voyager/Galileo mosaics",
+    "kind": "Мозаика космических снимков; непокрытые области условны",
+    "bytes": 135970
+  },
+  {
+    "id": "ganymede",
+    "file": "ganymede.jpg",
+    "url": "https://maps.jpl.nasa.gov/tmaps/pix/jup3vss2.jpg",
+    "source": "https://maps.jpl.nasa.gov/tmaps/jupiter.html",
+    "credit": "NASA / JPL / Caltech / USGS — Voyager/Galileo mosaics",
+    "kind": "Мозаика космических снимков; непокрытые области условны",
+    "bytes": 183557
+  },
+  {
+    "id": "haumea",
+    "file": "haumea.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_haumea_fictional.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Художественная карта",
+    "bytes": 900211
+  },
+  {
+    "id": "iapetus",
+    "file": "iapetus.jpg",
+    "url": "https://maps.jpl.nasa.gov/tmaps/pix/sat8vss2.jpg",
+    "source": "https://maps.jpl.nasa.gov/tmaps/saturn.html",
+    "credit": "NASA / JPL / Caltech / USGS — Voyager/Galileo mosaics",
+    "kind": "Мозаика космических снимков; непокрытые области условны",
+    "bytes": 64670
+  },
+  {
+    "id": "io",
+    "file": "io.jpg",
+    "url": "https://maps.jpl.nasa.gov/tmaps/pix/jup1vss2.jpg",
+    "source": "https://maps.jpl.nasa.gov/tmaps/jupiter.html",
+    "credit": "NASA / JPL / Caltech / USGS — Voyager/Galileo mosaics",
+    "kind": "Мозаика космических снимков; непокрытые области условны",
+    "bytes": 113001
+  },
+  {
+    "id": "jupiter",
+    "file": "jupiter.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_jupiter.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Карта на основе космических снимков; часть деталей реконструирована",
+    "bytes": 498976
+  },
+  {
+    "id": "makemake",
+    "file": "makemake.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_makemake_fictional.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Художественная карта",
+    "bytes": 1179218
+  },
+  {
+    "id": "mars",
+    "file": "mars.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_mars.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Карта на основе космических снимков; часть деталей реконструирована",
+    "bytes": 750547
+  },
+  {
+    "id": "mercury",
+    "file": "mercury.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_mercury.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Карта на основе космических снимков; часть деталей реконструирована",
+    "bytes": 872555
+  },
+  {
+    "id": "moon",
+    "file": "moon.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_moon.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Карта на основе космических снимков; часть деталей реконструирована",
+    "bytes": 1053869
+  },
+  {
+    "id": "neptune",
+    "file": "neptune.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_neptune.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Карта на основе космических снимков; часть деталей реконструирована",
+    "bytes": 241580
+  },
+  {
+    "id": "oberon",
+    "file": "oberon.jpg",
+    "url": "https://maps.jpl.nasa.gov/tmaps/pix/ura4vuu2.jpg",
+    "source": "https://maps.jpl.nasa.gov/tmaps/uranus.html",
+    "credit": "NASA / JPL / Caltech / USGS — Voyager/Galileo mosaics",
+    "kind": "Мозаика космических снимков; непокрытые области условны",
+    "bytes": 51214
+  },
+  {
+    "id": "pluto",
+    "file": "pluto.jpg",
+    "url": "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/p/l/pluto_color_mapmosaic_preview.jpg",
+    "source": "https://science.nasa.gov/resource/pluto-global-color-map/",
+    "credit": "NASA / JHUAPL / SwRI",
+    "kind": "Глобальная цветная мозаика New Horizons; цветовая обработка и ограниченное покрытие",
+    "bytes": 271765
+  },
+  {
+    "id": "rhea",
+    "file": "rhea.jpg",
+    "url": "https://maps.jpl.nasa.gov/tmaps/pix/sat5vss2.jpg",
+    "source": "https://maps.jpl.nasa.gov/tmaps/saturn.html",
+    "credit": "NASA / JPL / Caltech / USGS — Voyager/Galileo mosaics",
+    "kind": "Мозаика космических снимков; непокрытые области условны",
+    "bytes": 99961
+  },
+  {
+    "id": "saturn",
+    "file": "saturn.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_saturn.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Карта на основе космических снимков; часть деталей реконструирована",
+    "bytes": 199916
+  },
+  {
+    "id": "saturn_ring",
+    "file": "saturn_ring.png",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_saturn_ring_alpha.png",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Карта на основе космических снимков; часть деталей реконструирована",
+    "bytes": 12119
+  },
+  {
+    "id": "sun",
+    "file": "sun.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_sun.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Карта на основе космических снимков; часть деталей реконструирована",
+    "bytes": 822427
+  },
+  {
+    "id": "tethys",
+    "file": "tethys.jpg",
+    "url": "https://maps.jpl.nasa.gov/tmaps/pix/sat3vss2.jpg",
+    "source": "https://maps.jpl.nasa.gov/tmaps/saturn.html",
+    "credit": "NASA / JPL / Caltech / USGS — Voyager/Galileo mosaics",
+    "kind": "Мозаика космических снимков; непокрытые области условны",
+    "bytes": 150474
+  },
+  {
+    "id": "titania",
+    "file": "titania.jpg",
+    "url": "https://maps.jpl.nasa.gov/tmaps/pix/ura3vuu2.jpg",
+    "source": "https://maps.jpl.nasa.gov/tmaps/uranus.html",
+    "credit": "NASA / JPL / Caltech / USGS — Voyager/Galileo mosaics",
+    "kind": "Мозаика космических снимков; непокрытые области условны",
+    "bytes": 64502
+  },
+  {
+    "id": "triton",
+    "file": "triton.jpg",
+    "url": "https://maps.jpl.nasa.gov/tmaps/pix/nep1vuu2.jpg",
+    "source": "https://maps.jpl.nasa.gov/tmaps/neptune.html",
+    "credit": "NASA / JPL / Caltech / USGS — Voyager/Galileo mosaics",
+    "kind": "Мозаика космических снимков; непокрытые области условны",
+    "bytes": 58050
+  },
+  {
+    "id": "umbriel",
+    "file": "umbriel.jpg",
+    "url": "https://maps.jpl.nasa.gov/tmaps/pix/ura2vuu2.jpg",
+    "source": "https://maps.jpl.nasa.gov/tmaps/uranus.html",
+    "credit": "NASA / JPL / Caltech / USGS — Voyager/Galileo mosaics",
+    "kind": "Мозаика космических снимков; непокрытые области условны",
+    "bytes": 37653
+  },
+  {
+    "id": "uranus",
+    "file": "uranus.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_uranus.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Карта на основе космических снимков; часть деталей реконструирована",
+    "bytes": 77751
+  },
+  {
+    "id": "venus",
+    "file": "venus.jpg",
+    "url": "https://www.solarsystemscope.com/textures/download/2k_venus_atmosphere.jpg",
+    "source": "https://www.solarsystemscope.com/textures/",
+    "credit": "Solar System Scope / INOVE — CC BY 4.0",
+    "kind": "Карта на основе космических снимков; часть деталей реконструирована",
+    "bytes": 229696
+  }
+]

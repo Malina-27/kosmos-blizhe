@@ -1,0 +1,11 @@
+{
+  "name": "kosmos-blizhe",
+  "version": "4.0.0",
+  "private": true,
+  "description": "Интерактивный космический атлас Дины и Малики",
+  "scripts": {
+    "start": "node serve.mjs",
+    "check": "node --check script.js && node --check visuals.js && node --check texture-data.v3.js && node --check serve.mjs"
+  },
+  "engines": { "node": ">=18" }
+}
