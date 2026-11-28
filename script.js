@@ -3,6 +3,24 @@
   'use strict';
   const $ = (s, root = document) => root.querySelector(s);
   const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+
+  // Use real SVG shapes for controls on every platform, including iOS.
+  const arrowPaths={"↗":"M5 19 19 5M5 5h14v14","→":"M3 12h18m-7-7 7 7-7 7","←":"M21 12H3m7-7-7 7 7 7","↓":"M12 3v18m-7-7 7 7 7-7","↑":"M12 21V3m-7 7 7-7 7 7","↻":"M20 7v5h-5m5 0a8 8 0 1 0-1 6"};
+  function decorateIcons(root){
+    if(!root||!root.isConnected)return;
+    const nodes=[];
+    if(root.nodeType===Node.TEXT_NODE)nodes.push(root);
+    else{const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);while(walker.nextNode())nodes.push(walker.currentNode);}
+    for(const node of nodes){
+      if(!/[↗→←↓↑↻]/.test(node.data)||node.parentElement?.closest('svg,script,style,textarea,code'))continue;
+      const parts=node.data.split(/([↗→←↓↑↻])/),fragment=document.createDocumentFragment();
+      for(const part of parts){if(!arrowPaths[part]){fragment.append(document.createTextNode(part));continue;}const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('class','ui-arrow');svg.setAttribute('aria-hidden','true');svg.setAttribute('focusable','false');const path=document.createElementNS(svg.namespaceURI,'path');path.setAttribute('d',arrowPaths[part]);svg.append(path);fragment.append(svg);}
+      node.replaceWith(fragment);
+    }
+  }
+  const iconObserver=new MutationObserver(records=>{for(const record of records){if(record.type==='characterData')decorateIcons(record.target);else record.addedNodes.forEach(decorateIcons);}});
+  iconObserver.observe(document.body,{childList:true,subtree:true,characterData:true});
+
   const motionQuery = matchMedia('(prefers-reduced-motion: reduce)');
   const fineQuery = matchMedia('(hover: hover) and (pointer: fine)');
   const params = new URLSearchParams(location.search);
@@ -53,7 +71,7 @@
   const sourceList=$('#source-object-list');
   if(sourceList)bodies.forEach(body=>{const li=document.createElement('li'),a=document.createElement('a');a.href=body.source;a.target='_blank';a.rel='noopener noreferrer';a.textContent=body.name+' ↗';li.append(a);sourceList.append(li);});
   const visualEngine = window.CosmicVisuals.create(bodies);
-  const media = { dome:{src:'images/telescope-visit-2026-v2.png',width:1170,height:652,caption:'Телескоп. Материал из нашего визита',credit:'Фото предоставлено командой проекта'}, gallery:[], video:null }; // See README: local paths, captions and credit.
+  const media = { dome:{src:'images/telescope-visit-v6.webp',width:1170,height:652,caption:'Телескоп. Материал из нашего визита',credit:'Фото предоставлено командой проекта'}, gallery:[], video:null }; // See README: local paths, captions and credit.
   const binaryTexture=window.COSMOS_TEXTURE_DATA?.sun;
   if(binaryTexture?.startsWith('data:image/'))$('.binary-pair').style.setProperty('--binary-texture',`url("${binaryTexture}")`);
   const SOLAR_ORDER = ['sun','mercury','venus','earth','mars','jupiter','saturn','uranus','neptune'];
@@ -116,8 +134,7 @@
   motionQuery.addEventListener('change',e=>{reduced=e.matches;paused=reduced;syncMotion();});fineQuery.addEventListener('change',syncMotion);
   addEventListener('resize',resizeBackdrop);resizeBackdrop();syncMotion();startBackdrop();
   document.addEventListener('visibilitychange',()=>{document.body.classList.toggle('page-hidden',document.hidden);if(window.gsap)gsap.globalTimeline.paused(document.hidden);if(!document.hidden){startBackdrop();if(galaxy)galaxy.requestFrame();}});
-  illustrate($('#hero-saturn'),'saturn',true);
-  $$('[data-illustration]').forEach(c=>illustrate(c,c.dataset.illustration));
+  // The hero and card portraits are already visible in the HTML.
 
   // Navigation and progressive enhancement: copy never depends on GSAP.
   const menu=$('.menu-toggle'),nav=$('#main-nav');
@@ -127,31 +144,6 @@
   addEventListener('scroll',scrollProgress,{passive:true});scrollProgress();
   const navObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){$$('#main-nav a').forEach(a=>a.classList.toggle('active',a.hash===`#${e.target.id}`));}}),{rootMargin:'-15% 0px -55% 0px'});
   $$('main>section[id]').forEach(s=>navObserver.observe(s));
-  if(window.gsap&&window.ScrollTrigger)try{
-    gsap.registerPlugin(ScrollTrigger);
-    const motionContext=gsap.matchMedia();
-    motionContext.add('(prefers-reduced-motion: no-preference)',()=>{
-      if(reduced)return;
-      const split=h=>{if(!h.dataset.linesReady){h.innerHTML=h.innerHTML.split(/<br\s*\/?>/i).map(line=>'<span class="line-mask"><span class="line-inner">'+line+'</span></span>').join('');h.dataset.linesReady='true';}return $$('.line-inner',h);};
-      if($('#home').getBoundingClientRect().bottom>0){
-        const heroLines=split($('#hero-title'));
-        gsap.fromTo(heroLines,{yPercent:110,opacity:0,rotate:1.2},{yPercent:0,opacity:1,rotate:0,duration:1.25,stagger:.13,ease:'power4.out',delay:.12});
-        gsap.from('.hero-content>.eyebrow',{x:-24,opacity:0,duration:.9,ease:'power3.out'});
-        gsap.from('.hero-description,.hero-actions',{y:25,opacity:0,duration:1,stagger:.13,delay:.45,ease:'power3.out'});
-      }
-      $$('.section-heading').forEach(heading=>{
-        if(heading.getBoundingClientRect().bottom<0)return;
-        const lines=split($('h2',heading)),tl=gsap.timeline({paused:true});
-        tl.fromTo(lines,{yPercent:110,opacity:0},{yPercent:0,opacity:1,duration:1.05,stagger:.1,ease:'power4.out'}).from($('.eyebrow',heading),{x:-20,opacity:0,duration:.75},0).from($('.section-intro',heading),{x:24,opacity:0,duration:.85},.15);
-        ScrollTrigger.create({trigger:heading,start:'top 90%',onEnter:()=>tl.play()});
-      });
-      $$('.reveal:not(.section-heading)').forEach(el=>{if(el.getBoundingClientRect().bottom<0)return;gsap.from(el,{y:55,opacity:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 94%',toggleActions:'play none none none'}});});
-      ['.visit-figure','.observatory-copy','.quiz-card','.star-questions'].forEach((selector,i)=>{const el=$(selector);if(el.getBoundingClientRect().bottom<0)return;gsap.from(el,{x:i%2?35:-35,opacity:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 92%',toggleActions:'play none none none'}});});
-    });
-  }catch{
-    if(window.ScrollTrigger)ScrollTrigger.getAll().forEach(trigger=>trigger.kill());
-    $$('.reveal,.line-inner,.hero-description,.hero-actions,.visit-figure,.observatory-copy,.quiz-card,.star-questions,.section-intro,.eyebrow').forEach(el=>{el.style.removeProperty('opacity');el.style.removeProperty('transform');});
-  }
 
   function fillPanel(id){
     const b=byId[id];$('#panel-type').textContent=TYPES[b.type];$('#panel-title').textContent=b.name;$('#panel-description').textContent=b.description;$('#panel-feature').textContent=b.feature;$('#panel-look').textContent='Визуализация: '+b.look;
@@ -164,7 +156,7 @@
   function selectObject(id){
     if(!byId[id])return;
     if(activeId===id){view=(view+1)%4;}else{activeId=id;view=0;}
-    fillPanel(id);if(galaxy)galaxy.select(id,view);
+    fillPanel(id);if(galaxy)galaxy.select(id,view);else ensureGalaxy();
   }
   function exitObject(){
     if(!activeId)return;const prior=activeId;activeId=null;view=0;$('#object-panel').hidden=true;$('#atlas').classList.remove('has-selection');$('#scene-help').hidden=false;
@@ -192,7 +184,7 @@
 
   function renderFallback(){
     $('#atlas').classList.add('is-fallback');$('#atlas').dataset.renderer='cards';const grid=$('#fallback-grid');grid.hidden=false;
-    if(!grid.childElementCount)bodies.forEach(b=>{const button=document.createElement('button');button.className='fallback-object';button.dataset.object=b.id;button.setAttribute('aria-label',`Рассмотреть: ${b.name}`);const c=document.createElement('canvas');c.setAttribute('aria-hidden','true');illustrate(c,b.id);const strong=document.createElement('strong');strong.textContent=b.name;const small=document.createElement('small');small.textContent=TYPES[b.type];button.append(c,strong,small);button.addEventListener('click',()=>{selectObject(b.id);$('#object-panel').scrollIntoView({behavior:reduced?'instant':'smooth',block:'nearest'});});grid.append(button);});
+    if(!grid.childElementCount)bodies.forEach(b=>{const button=document.createElement('button');button.className='fallback-object';button.dataset.object=b.id;button.hidden=!matchesFilter(b);button.setAttribute('aria-label',`Рассмотреть: ${b.name}`);const c=document.createElement('img');c.alt='';c.width=600;c.height=440;c.loading='lazy';c.src='images/portraits-v6/'+(b.type==='planet'||b.id==='moon'||b.id==='sun'?b.id:'moon')+'.webp';const strong=document.createElement('strong');strong.textContent=b.name;const small=document.createElement('small');small.textContent=TYPES[b.type];button.append(c,strong,small);if(!(b.type==='planet'||b.id==='moon'||b.id==='sun')){c.removeAttribute('src');c.hidden=true;const observer=new IntersectionObserver(entries=>{if(entries[0].isIntersecting){const canvas=document.createElement('canvas');canvas.setAttribute('aria-hidden','true');illustrate(canvas,b.id);c.replaceWith(canvas);observer.disconnect();}},{rootMargin:'200px'});observer.observe(button);}button.addEventListener('click',()=>{selectObject(b.id);$('#object-panel').scrollIntoView({behavior:reduced?'instant':'smooth',block:'nearest'});});grid.append(button);});
     $('#next-view').hidden=true;$('#view-indicator').textContent='Статичная художественная визуализация';
     // Static mode keeps every explanation and accessible selection, without pretending to show new views.
     $('#object-panel').classList.add('static-panel');
@@ -203,7 +195,7 @@
     if(params.get('view')==='cards'||!window.THREE){renderFallback();return;}
     const T=window.THREE,host=$('#galaxy-viewport');let renderer;
     try{renderer=new T.WebGLRenderer({antialias:innerWidth>700,alpha:true,powerPreference:'low-power'});}catch{renderFallback();return;}
-    renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputEncoding=T.sRGBEncoding;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.setClearColor(0x000000,0);host.prepend(renderer.domElement);renderer.domElement.setAttribute('aria-label','Трёхмерная художественная модель космических объектов');renderer.domElement.setAttribute('role','img');$('#atlas').dataset.renderer='webgl';
+    renderer.setPixelRatio(Math.min(devicePixelRatio||1,innerWidth<700?1.5:2));renderer.outputEncoding=T.sRGBEncoding;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.setClearColor(0x000000,0);host.prepend(renderer.domElement);renderer.domElement.setAttribute('aria-label','Трёхмерная художественная модель космических объектов');renderer.domElement.setAttribute('role','img');$('#atlas').dataset.renderer='webgl';
     const scene=new T.Scene(),camera=new T.PerspectiveCamera(42,1,.1,500),target=new T.Vector3(),home=new T.Vector3(),raycaster=new T.Raycaster(),mouse=new T.Vector2();
     scene.add(new T.AmbientLight(0xc9ccdb,.4));scene.add(new T.HemisphereLight(0xc4d9ff,0x68616f,.35));const key=new T.DirectionalLight(0xfff7e9,1.9);key.position.set(-18,18,28);scene.add(key);const fill=new T.DirectionalLight(0x8a9dcb,.3);fill.position.set(15,-5,-10);scene.add(fill);
     const meshes=[],groups=new Map(),labels=new Map(),orbits=new T.Group();scene.add(orbits);let frame=0,inView=false,lastTime=0,localTime=0,animating=false,hovered=null,tweenFrame=0;
@@ -241,10 +233,9 @@
       }else material=new T.MeshBasicMaterial({color:0x929c9e,side:T.DoubleSide,transparent:true,opacity:body.id==='uranus'?.16:.12,depthWrite:false});
       const ringMesh=new T.Mesh(geo,material);ringMesh.rotation.x=-Math.PI/2+.32;ringMesh.rotation.y=.12;ringMesh.userData.id=body.id;group.add(ringMesh);meshes.push(ringMesh);
     }
-    bodies.forEach((body,i)=>{
-      const sizes={sun:1.95,mercury:.4,venus:.65,earth:.7,mars:.52,jupiter:1.35,saturn:1.12,uranus:.83,neptune:.8};
-      const group=new T.Group(),radius=sizes[body.id]||(body.type==='moon'?.58:body.type==='minor'?.57:.8);
-      group.userData={body,radius,spin:[]};
+    function ensureBody(group){
+      if(group.userData.initialized)return;group.userData.initialized=true;
+      const body=group.userData.body,radius=group.userData.radius;
       if(body.id==='binary'){
         const a=makeMesh(byId.sun,.56,true),b=makeMesh({...body,color:'#b6d8ff',texture:'sun'},.42,true);a.userData.id=b.userData.id='binary';a.position.x=-.86;b.position.x=.86;group.add(a,b);group.userData.binary=[a,b];group.userData.radius=1.7;
         const center=new T.Mesh(new T.SphereGeometry(.04,8,6),new T.MeshBasicMaterial({color:0xffd27a}));group.add(center);
@@ -257,6 +248,11 @@
         }
       }
       const glow=new T.Sprite(new T.SpriteMaterial({map:glowMap,color:body.color,transparent:true,opacity:body.type==='star'?.28:.025,depthWrite:false,blending:T.AdditiveBlending}));glow.scale.setScalar(radius*(body.type==='star'?5:3.2));group.add(glow);group.userData.glow=glow;group.userData.baseOpacity=body.type==='star'?.28:.025;
+    }
+    bodies.forEach((body,i)=>{
+      const sizes={sun:1.95,mercury:.4,venus:.65,earth:.7,mars:.52,jupiter:1.35,saturn:1.12,uranus:.83,neptune:.8};
+      const group=new T.Group(),radius=sizes[body.id]||(body.type==='moon'?.58:body.type==='minor'?.57:.8);
+      group.userData={body,radius,spin:[]};
       scene.add(group);groups.set(body.id,group);
       const label=document.createElement('button');label.className='scene-target';label.dataset.object=body.id;label.setAttribute('aria-label',`Приблизиться: ${body.name}`);label.tabIndex=-1;label.addEventListener('click',()=>selectObject(body.id));$('#object-labels').append(label);labels.set(body.id,label);
     });
@@ -304,7 +300,7 @@
       if(window.gsap){gsap.killTweensOf(camera.position);gsap.killTweensOf(target);animating=true;const opts={duration:reduced?0:1.6,ease:'power3.inOut',onUpdate:()=>{camera.lookAt(target);requestFrame();}};gsap.to(target,{...opts,x:look.x,y:look.y,z:look.z});gsap.to(camera.position,{...opts,x:position.x,y:position.y,z:position.z,onComplete:()=>{animating=false;requestFrame();}});requestFrame();}
       else{cancelAnimationFrame(tweenFrame);const start=performance.now(),from=camera.position.clone(),fromTarget=target.clone();animating=true;const tick=now=>{const progress=reduced?1:Math.min(1,(now-start)/1600),e=progress<.5?4*progress**3:1-(-2*progress+2)**3/2;camera.position.lerpVectors(from,position,e);target.lerpVectors(fromTarget,look,e);camera.lookAt(target);requestFrame();if(progress<1)tweenFrame=requestAnimationFrame(tick);else animating=false;};tweenFrame=requestAnimationFrame(tick);}
     }
-    function updateVisibility(){orbits.visible=currentFilter==='solar'&&!activeId;groups.forEach((g,id)=>{g.visible=activeId?id===activeId:matchesFilter(g.userData.body);labels.get(id).hidden=!g.visible||!!activeId;});}
+    function updateVisibility(){orbits.visible=currentFilter==='solar'&&!activeId;groups.forEach((g,id)=>{g.visible=activeId?id===activeId:matchesFilter(g.userData.body);if(g.visible)ensureBody(g);labels.get(id).hidden=!g.visible||!!activeId;});}
     function select(id,index){
       updateVisibility();const g=groups.get(id);if(!g)return;const r=g.userData.radius,center=g.position.clone(),mobile=host.clientWidth<650,side=mobile?0:r*1.3,look=center.clone().add(new T.Vector3(side,0,0)),dist=r*(id==='saturn'||id==='quaoar'?8.5:6.5),offsets=[[0,.5,dist],[0,dist,.15],[-dist,.3,0],[dist,.3,0]],o=offsets[index];
       tweenCamera(center.clone().add(new T.Vector3(o[0]+side,o[1],o[2])),look);
@@ -332,16 +328,30 @@
     renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();inView=false;cancelAnimationFrame(frame);renderer.dispose();renderFallback();galaxy=null;});
     const observer=new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;if(inView)requestFrame();},{rootMargin:'100px'});observer.observe(host);new ResizeObserver(resize).observe(host);
     addEventListener('scroll',()=>{const visible=sceneIsVisible();if(visible&&!inView){inView=true;requestFrame();}else if(!visible)inView=false;},{passive:true});
-    galaxy={select,reset,requestFrame,filter:()=>{layout();updateVisibility();reset();}};resize();
+    galaxy={select,reset,requestFrame,filter:()=>{layout();updateVisibility();reset();}};updateVisibility();resize();
   }
-  try{initGalaxy();}catch{renderFallback();}
+  let galaxyLoading=null;
+  function ensureGalaxy(){
+    if(galaxyLoading)return galaxyLoading;
+    if(params.get('view')==='cards'){renderFallback();galaxyLoading=Promise.resolve(null);return galaxyLoading;}
+    $('#atlas').dataset.state='loading';
+    galaxyLoading=new Promise((resolve,reject)=>{
+      if(window.THREE){resolve();return;}
+      const script=document.createElement('script');script.src='vendor/three.r128.min.js';script.async=true;script.onload=resolve;script.onerror=reject;document.head.append(script);
+    }).then(()=>{try{initGalaxy();}catch{renderFallback();}$('#atlas').dataset.state='ready';if(activeId)fillPanel(activeId);return galaxy;}).catch(()=>{renderFallback();$('#atlas').dataset.state='fallback';return null;});
+    return galaxyLoading;
+  }
   applyFilter(currentFilter);
+  const atlasObserver=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){ensureGalaxy();atlasObserver.disconnect();}},{rootMargin:'600px'});
+  requestAnimationFrame(()=>requestAnimationFrame(()=>atlasObserver.observe($('#atlas'))));
+  if(location.hash&&location.hash!=='#home')ensureGalaxy();
+  $('a[href="#explore"].button').addEventListener('pointerdown',ensureGalaxy,{once:true,passive:true});
 
   // More planet cards, generated from the same sourced atlas data.
   const morePlanets=bodies.filter(b=>b.type==='planet'&&!['mars','jupiter','saturn'].includes(b.id));
   const moreButton=document.createElement('button');moreButton.className='button button-outline';moreButton.style.marginTop='25px';moreButton.textContent='Открыть остальные планеты +';moreButton.setAttribute('aria-expanded','false');
   const moreGrid=document.createElement('div');moreGrid.className='planet-grid more-planets';moreGrid.hidden=true;moreGrid.style.marginTop='30px';
-  morePlanets.forEach(b=>{const article=document.createElement('article');article.className='planet-card';const art=document.createElement('div');art.className='planet-art';art.dataset.artObject=b.id;const canvas=document.createElement('canvas');canvas.setAttribute('role','img');canvas.setAttribute('aria-label',b.name+' — художественная визуализация');illustrate(canvas,b.id);art.append(canvas);const copy=document.createElement('div');copy.className='card-copy';const h=document.createElement('h3');h.textContent=b.name;const p=document.createElement('p');p.textContent=b.description;const d=document.createElement('details');const s=document.createElement('summary');s.textContent='Узнать больше +';const fact=document.createElement('p');fact.textContent=b.feature;const source=document.createElement('a');source.href=b.source;source.className='source-link';source.target='_blank';source.rel='noopener noreferrer';source.textContent='NASA · '+b.name+' ↗';d.append(s,fact,source);const go=document.createElement('button');go.className='text-link';go.dataset.go=b.id;go.textContent='Рассмотреть в галактике ↗';copy.append(h,p,d,go);article.append(art,copy);moreGrid.append(article);});
+  morePlanets.forEach(b=>{const article=document.createElement('article');article.className='planet-card';const art=document.createElement('div');art.className='planet-art';art.dataset.artObject=b.id;const canvas=document.createElement('img');canvas.width=600;canvas.height=440;canvas.alt=b.name+' — художественная визуализация';canvas.loading='lazy';canvas.decoding='async';canvas.src='images/portraits-v6/'+b.id+'.webp';art.append(canvas);const copy=document.createElement('div');copy.className='card-copy';const h=document.createElement('h3');h.textContent=b.name;const p=document.createElement('p');p.textContent=b.description;const d=document.createElement('details');const s=document.createElement('summary');s.textContent='Узнать больше +';const fact=document.createElement('p');fact.textContent=b.feature;const source=document.createElement('a');source.href=b.source;source.className='source-link';source.target='_blank';source.rel='noopener noreferrer';source.textContent='NASA · '+b.name+' ↗';d.append(s,fact,source);const go=document.createElement('button');go.className='text-link';go.dataset.go=b.id;go.textContent='Рассмотреть в галактике ↗';copy.append(h,p,d,go);article.append(art,copy);moreGrid.append(article);});
   $('.planet-grid').after(moreButton,moreGrid);moreButton.addEventListener('click',()=>{moreGrid.hidden=!moreGrid.hidden;moreButton.setAttribute('aria-expanded',String(!moreGrid.hidden));moreButton.textContent=moreGrid.hidden?'Открыть остальные планеты +':'Свернуть дополнительные карточки −';});
   document.addEventListener('click',event=>{const go=event.target.closest('[data-go]');if(go){applyFilter(solarIds.has(go.dataset.go)?'solar':'all');selectObject(go.dataset.go);$('#atlas').scrollIntoView({behavior:reduced?'instant':'smooth',block:'start'});}});
 
@@ -378,10 +388,10 @@
   }
   function closeLightbox(){lightbox.close();previousFocus?.focus({preventScroll:true});}
   $('#lightbox-close').addEventListener('click',closeLightbox);lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeLightbox();});lightbox.addEventListener('cancel',e=>{e.preventDefault();closeLightbox();});
-  $$('.planet-art').forEach(art=>{const id=art.dataset.artObject||art.closest('[data-card]')?.dataset.card;if(!id)return;art.setAttribute('role','button');art.tabIndex=0;art.setAttribute('aria-label',`Открыть иллюстрацию: ${byId[id].name}`);const open=()=>{const c=document.createElement('canvas');illustrate(c,id);openLightbox(c,`${byId[id].name}. 3D-визуализация. ${visualEngine.credit(id).label}. Не снимок через телескоп.`);};art.addEventListener('click',open);art.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});});
+  $$('.planet-art').forEach(art=>{const id=art.dataset.artObject||art.closest('[data-card]')?.dataset.card;if(!id)return;art.setAttribute('role','button');art.tabIndex=0;art.setAttribute('aria-label',`Открыть иллюстрацию: ${byId[id].name}`);const open=()=>{const c=art.querySelector('img')?.cloneNode()||document.createElement('canvas');if(c.tagName==='CANVAS')illustrate(c,id);else c.loading='eager';openLightbox(c,`${byId[id].name}. 3D-визуализация. ${visualEngine.credit(id).label}. Не снимок через телескоп.`);};art.addEventListener('click',open);art.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});});
   function createPhoto(item,button){
     if(!item||!item.src?.startsWith('images/'))return;
-    const image=new Image();image.alt=item.caption;image.width=item.width||1400;image.height=item.height||1000;image.loading='lazy';
+    const image=button.querySelector('img')||new Image();image.alt=item.caption;image.width=item.width||1400;image.height=item.height||1000;image.loading='lazy';
     image.onerror=()=>{image.onerror=null;button.replaceChildren();const card=document.createElement('span');card.className='photo-placeholder';card.textContent=`[${item.caption}]`;button.append(card);button.disabled=true;};
     image.onload=()=>{image.dataset.mediaReady='true';button.disabled=false;};
     const embedded=window.COSMOS_MEDIA_DATA?.[item.src];
@@ -393,5 +403,6 @@
   }
   if(media.dome){createPhoto(media.dome,$('[data-photo-slot="dome"]'));$('#dome-caption').textContent=media.dome.caption+' · '+media.dome.credit;}else{$('[data-photo-slot="dome"]').disabled=true;}
   media.gallery.forEach(item=>{const figure=document.createElement('figure'),button=document.createElement('button'),caption=document.createElement('figcaption');button.className='photo-button';button.setAttribute('aria-label','Смотреть: '+item.caption);caption.textContent=item.caption+' · '+(item.credit||'[Источник фотографии]');createPhoto(item,button);figure.append(button,caption);$('#visit-gallery').append(figure);});
+  decorateIcons(document.body);
   if(media.video?.src?.startsWith('media/')){const video=document.createElement('video');video.src=media.video.src;video.controls=true;video.playsInline=true;video.preload='none';if(media.video.poster?.startsWith('images/'))video.poster=media.video.poster;const caption=document.createElement('p');caption.className='visual-caption';caption.textContent=media.video.caption+' · '+(media.video.credit||'[Источник видео]');$('#visit-video').append(video,caption);}
 })();

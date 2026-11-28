@@ -45,9 +45,9 @@
     const WIDTH=1024,HEIGHT=512,embedded=window.COSMOS_TEXTURE_DATA||{};
     let ringPixels=null;
     function imageSource(id){
-      if(embedded[id])return embedded[id];
-      if(location.protocol==='file:')return null;
-      return 'images/textures/'+id+(id==='saturn_ring'?'.png':'.jpg');
+      if(window.COSMOS_TEXTURE_DATA?.[id])return window.COSMOS_TEXTURE_DATA[id];
+      if(location.protocol==='file:')return 'images/maps-v6/'+id+'.webp';
+      return 'images/maps-v6/'+id+'.webp';
     }
     function announce(id){
       pixels.delete(id);
@@ -59,7 +59,7 @@
     }
     function onReady(id,callback){if(!listeners.has(id))listeners.set(id,[]);listeners.get(id).push(callback);}
     function generate(body){
-      const detail=mapped.has(body.id)?128:512,height=detail/2,draft=document.createElement('canvas');draft.width=detail;draft.height=height;
+      const detail=mapped.has(body.id)?64:256,height=detail/2,draft=document.createElement('canvas');draft.width=detail;draft.height=height;
       const ctx=draft.getContext('2d'),image=ctx.createImageData(detail,height),base=body.color.match(/[a-f\d]{2}/gi).map(v=>parseInt(v,16)),seed=seedOf(body.id);
       for(let y=0;y<height;y++){
         const lat=(y/(height-1)-.5)*Math.PI,ny=Math.sin(lat),c=Math.cos(lat);
